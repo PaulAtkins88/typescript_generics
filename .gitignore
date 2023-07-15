@@ -1,0 +1,29 @@
+# Node.js
+node_modules/
+
+# Compiled output
+dist/
+
+# Environment variables
+.env
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# Logs
+logs/
+
+# Testing files
+coverage/
+
+# Dependency lock files
+package-lock.json
+yarn.lock
+
+# Build artifacts
+*.log
+*.swp
+
+# macOS
+.DS_Store

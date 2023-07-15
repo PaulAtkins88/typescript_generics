@@ -1,6 +1,7 @@
 import User from './User';
 
-export default interface Order {
+type Order = {
   id: number;
   user: User;
-}
+};
+export default Order;
