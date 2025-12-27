@@ -1,13 +1,27 @@
 import { Request, Response } from 'express';
-import IDataLayerService from '../interface/IDataLayerService';
+import IService from '../interface/IService';
 import User from '../model/User';
 import { BaseController } from './Base.controller';
 
+/**
+ * User controller for handling HTTP requests related to User entities.
+ * 
+ * TEACHING EXAMPLE: Concrete Controller Implementation
+ * Extends BaseController<User> to inherit CRUD operations and error handling.
+ * HTTP methods (getAllUsers, getUserById, etc.) use the inherited handleRequest()
+ * for consistent response formatting and error handling.
+ * 
+ * ARCHITECTURE: Controller → Service → Repository → Data
+ */
 export default class UserController extends BaseController<User> {
-  protected dataLayerService: IDataLayerService<User>;
-  constructor(dataLayerService: IDataLayerService<User>) {
+  protected service: IService<User>;
+
+  /**
+   * @param service - The service implementation handling business logic
+   */
+  constructor(service: IService<User>) {
     super();
-    this.dataLayerService = dataLayerService;
+    this.service = service;
   }
 
   getAllUsers(req: Request, res: Response): Promise<void> {

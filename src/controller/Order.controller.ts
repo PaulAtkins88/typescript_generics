@@ -1,13 +1,24 @@
 import { Request, Response } from 'express';
-import IDataLayerService from '../interface/IDataLayerService';
+import IService from '../interface/IService';
 import Order from '../model/Order';
 import { BaseController } from './Base.controller';
 
+/**
+ * Order controller for handling HTTP requests related to Order entities.
+ * 
+ * TEACHING EXAMPLE: Same Pattern for Different Entity
+ * Identical structure to UserController but for Order entities.
+ * This demonstrates the code reuse power of generic base classes.
+ */
 export default class OrderController extends BaseController<Order> {
-  protected dataLayerService: IDataLayerService<Order>;
-  constructor(dataLayerService: IDataLayerService<Order>) {
+  protected service: IService<Order>;
+
+  /**
+   * @param service - The service implementation handling business logic
+   */
+  constructor(service: IService<Order>) {
     super();
-    this.dataLayerService = dataLayerService;
+    this.service = service;
   }
 
   getAllOrders(req: Request, res: Response): Promise<void> {

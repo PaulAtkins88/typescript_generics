@@ -1,13 +1,27 @@
 import IResponse from '../interface/IDataLayer';
-import IDataLayerService from '../interface/IDataLayerService';
+import IRepository from '../interface/IRepository';
 import Order from '../model/Order';
-import { BaseRepository } from './BaseRepository.repository';
 
-export default class OrderDataLayerService
-  extends BaseRepository<Order>
-  implements IDataLayerService<Order>
-{
-  // This could be a database connection or a REST API call, but for this demo, we'll just use an array.
+/**
+ * In-memory implementation of Order repository.
+ * 
+ * TEACHING EXAMPLE: Same Pattern, Different Entity
+ * This is nearly identical to InMemoryUserRepository but manages Order entities.
+ * The generic IRepository<T> interface means we implement the same methods
+ * regardless of entity type.
+ * 
+ * ALTERNATIVE IMPLEMENTATIONS:
+ * - PostgresOrderRepository: SELECT * FROM orders WHERE id = $1
+ * - MongoOrderRepository: db.orders.findOne({ id })
+ * - RedisOrderRepository: redis.get(`order:${id}`)
+ * - FileOrderRepository: JSON.parse(fs.readFileSync('orders.json'))
+ */
+export default class InMemoryOrderRepository implements IRepository<Order> {
+  /**
+   * In-memory data store for orders.
+   * Notice orders contain nested User objects - repositories handle
+   * entity relationships and data structure.
+   */
   private orders: Order[] = [
     {
       id: 1,

@@ -1,13 +1,32 @@
 import IResponse from '../interface/IDataLayer';
-import IDataLayerService from '../interface/IDataLayerService';
+import IRepository from '../interface/IRepository';
 import User from '../model/User';
-import { BaseRepository } from './BaseRepository.repository';
 
-export default class UserRepository
-  extends BaseRepository<User>
-  implements IDataLayerService<User>
-{
-  // This could be a database connection or a REST API call, but for this demo, we'll just use an array.
+/**
+ * In-memory implementation of User repository.
+ * 
+ * TEACHING EXAMPLE: Concrete Repository Implementation
+ * This demonstrates the Repository Pattern by implementing IRepository<User>
+ * using a simple in-memory array as the data source.
+ * 
+ * KEY CONCEPT: Swappable Data Sources
+ * Because this implements IRepository<User>, it can be swapped with:
+ * - PostgresUserRepository (database)
+ * - FileUserRepository (JSON file)
+ * - ApiUserRepository (external API)
+ * - MockUserRepository (testing)
+ * 
+ * The service layer doesn't know or care which implementation is used!
+ * 
+ * NOTE: In-memory storage is lost when the server restarts.
+ * This is useful for demos, testing, and prototyping.
+ */
+export default class InMemoryUserRepository implements IRepository<User> {
+  /**
+   * In-memory data store.
+   * In a real app, this would be replaced with database queries,
+   * file operations, or API calls.
+   */
   private users: User[] = [
     {
       id: 1,
