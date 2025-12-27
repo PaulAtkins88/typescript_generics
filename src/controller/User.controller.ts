@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
+import { CreateUserRequest, UpdateUserRequest, UserResponse } from '../dto/User.dto';
 import IService from '../interface/IService';
-import User from '../model/User';
 import { BaseController } from './Base.controller';
 
 /**
@@ -13,13 +13,13 @@ import { BaseController } from './Base.controller';
  * 
  * ARCHITECTURE: Controller → Service → Repository → Data
  */
-export default class UserController extends BaseController<User> {
-  protected service: IService<User>;
+export default class UserController extends BaseController<CreateUserRequest | UpdateUserRequest, UserResponse> {
+  protected service: IService<CreateUserRequest | UpdateUserRequest, UserResponse>;
 
   /**
    * @param service - The service implementation handling business logic
    */
-  constructor(service: IService<User>) {
+  constructor(service: IService<CreateUserRequest | UpdateUserRequest, UserResponse>) {
     super();
     this.service = service;
   }
@@ -34,12 +34,12 @@ export default class UserController extends BaseController<User> {
   }
 
   createUser(req: Request, res: Response): Promise<void> {
-    const { body } = req as { body: User };
+    const { body } = req as { body: CreateUserRequest };
     return this.handleRequest(req, res, this.create.bind(this, body));
   }
 
   updateUser(req: Request, res: Response): Promise<void> {
-    const { body } = req as { body: User };
+    const { body } = req as { body: UpdateUserRequest };
     const { id } = req.params;
     return this.handleRequest(
       req,

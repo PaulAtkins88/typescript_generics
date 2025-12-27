@@ -15,7 +15,8 @@ import IService from '../interface/IService';
  * 2. Sending success response (200)
  * 3. Catching and sending error response (500)
  * 
- * @template T - The entity type this controller manages
+ * @template R - Request DTO (input shape)
+ * @template T - Response DTO (output shape)
  * 
  * @example
  * // Concrete controllers specify type and inject service:
@@ -37,12 +38,12 @@ import IService from '../interface/IService';
  * HTTP Request → Controller → Service → Repository → Data Source
  * HTTP Response ← Controller ← Service ← Repository ← Data Source
  */
-export abstract class BaseController<T> implements IService<T> {
+export abstract class BaseController<R, T> implements IService<R, T> {
   /**
    * Abstract service property that must be provided by concrete controllers.
    * Controllers depend on IService<T>, not IRepository<T>, maintaining proper layering.
    */
-  protected abstract service: IService<T>;
+  protected abstract service: IService<R, T>;
 
   /**
    * Delegates to service's getAll() method.
@@ -66,7 +67,7 @@ export abstract class BaseController<T> implements IService<T> {
    * Delegates to service's create() method.
    * Concrete controllers call this via handleRequest() for error handling.
    */
-  async create(data: T): Promise<IResponse<T>> {
+  async create(data: R): Promise<IResponse<T>> {
     const response: IResponse<T> = await this.service.create(data);
     return response;
   }
@@ -75,7 +76,7 @@ export abstract class BaseController<T> implements IService<T> {
    * Delegates to service's update() method.
    * Concrete controllers call this via handleRequest() for error handling.
    */
-  async update(id: number, data: T): Promise<IResponse<T>> {
+  async update(id: number, data: R): Promise<IResponse<T>> {
     const response: IResponse<T> = await this.service.update(id, data);
     return response;
   }

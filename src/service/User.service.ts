@@ -1,3 +1,4 @@
+import { CreateUserRequest, UpdateUserRequest, UserResponse } from '../dto/User.dto';
 import IRepository from '../interface/IRepository';
 import User from '../model/User';
 import { BaseService } from './Base.service';
@@ -19,7 +20,7 @@ import { BaseService } from './Base.service';
  * - getUserWithOrders(id: number)
  * - etc.
  */
-export default class UserService extends BaseService<User> {
+export default class UserService extends BaseService<CreateUserRequest | UpdateUserRequest, UserResponse, User> {
   protected repository: IRepository<User>;
 
   /**
@@ -36,7 +37,20 @@ export default class UserService extends BaseService<User> {
 
   // All CRUD methods (getAll, getById, create, update, delete) are inherited!
   // Add custom business logic methods below:
-  
-  // Example: async validateAndCreate(user: User): Promise<IResponse<User>> { ... }
-  // Example: async getUserWithOrders(id: number): Promise<IResponse<UserWithOrders>> { ... }
+
+  /** Map incoming DTOs to domain entity */
+  protected toEntity(request: CreateUserRequest | UpdateUserRequest): User {
+    return {
+      id: request.id,
+      name: request.name.trim(),
+    };
+  }
+
+  /** Map domain entity to response DTO */
+  protected toResponse(entity: User): UserResponse {
+    return {
+      id: entity.id,
+      name: entity.name,
+    };
+  }
 }

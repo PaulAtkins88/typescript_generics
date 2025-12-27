@@ -14,7 +14,9 @@ import IService from '../interface/IService';
  * The service depends on IRepository<T> (abstraction), not a concrete implementation.
  * This follows the Dependency Inversion Principle (SOLID).
  * 
- * @template T - The entity type this service manages
+ * @template R - Request DTO (input shape)
+ * @template T - Response DTO (output shape)
+ * @template E - Domain entity used by the repository (defaults to T)
  * 
  * @example
  * // Concrete services just specify the type and inject the repository:
@@ -37,20 +39,27 @@ import IService from '../interface/IService';
  * const testService = new UserService(new InMemoryUserRepository());
  * const cacheService = new UserService(new CachedUserRepository());
  */
-export abstract class BaseService<T> implements IService<T> {
+export abstract class BaseService<R, T, E = T> implements IService<R, T> {
   /**
    * Abstract repository property that must be provided by concrete services.
    * This enforces that every service has a repository while keeping the base class
    * flexible about which implementation to use.
    */
-  protected abstract repository: IRepository<T>;
+  protected abstract repository: IRepository<E>;
+
+  /** Map request DTO -> domain entity */
+  protected abstract toEntity(request: R): E;
+
+  /** Map domain entity -> response DTO */
+  protected abstract toResponse(entity: E): T;
 
   /**
    * Delegates to repository's getAll() method.
    * Override in concrete services to add business logic (filtering, sorting, auth, etc.)
    */
   async getAll(): Promise<IResponse<T[]>> {
-    return await this.repository.getAll();
+    const result = await this.repository.getAll();
+    return { ...result, data: result.data.map((item) => this.toResponse(item)) };
   }
 
   /**
@@ -58,23 +67,28 @@ export abstract class BaseService<T> implements IService<T> {
    * Override in concrete services to add business logic (auth checks, data enrichment, etc.)
    */
   async getById(id: number): Promise<IResponse<T>> {
-    return await this.repository.getById(id);
+    const result = await this.repository.getById(id);
+    return { ...result, data: this.toResponse(result.data) };
   }
 
   /**
    * Delegates to repository's create() method.
    * Override in concrete services to add business logic (validation, defaults, notifications, etc.)
    */
-  async create(data: T): Promise<IResponse<T>> {
-    return await this.repository.create(data);
+  async create(data: R): Promise<IResponse<T>> {
+    const entity = this.toEntity(data);
+    const result = await this.repository.create(entity);
+    return { ...result, data: this.toResponse(result.data) };
   }
 
   /**
    * Delegates to repository's update() method.
    * Override in concrete services to add business logic (validation, auth, audit logs, etc.)
    */
-  async update(id: number, data: T): Promise<IResponse<T>> {
-    return await this.repository.update(id, data);
+  async update(id: number, data: R): Promise<IResponse<T>> {
+    const entity = this.toEntity(data);
+    const result = await this.repository.update(id, entity);
+    return { ...result, data: this.toResponse(result.data) };
   }
 
   /**
@@ -82,6 +96,7 @@ export abstract class BaseService<T> implements IService<T> {
    * Override in concrete services to add business logic (auth, cascade deletes, cleanup, etc.)
    */
   async delete(id: number): Promise<IResponse<T>> {
-    return await this.repository.delete(id);
+    const result = await this.repository.delete(id);
+    return { ...result, data: this.toResponse(result.data) };
   }
 }

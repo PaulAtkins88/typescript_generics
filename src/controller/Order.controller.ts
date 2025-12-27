@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
+import { CreateOrderRequest, OrderResponse, UpdateOrderRequest } from '../dto/Order.dto';
 import IService from '../interface/IService';
-import Order from '../model/Order';
 import { BaseController } from './Base.controller';
 
 /**
@@ -10,13 +10,13 @@ import { BaseController } from './Base.controller';
  * Identical structure to UserController but for Order entities.
  * This demonstrates the code reuse power of generic base classes.
  */
-export default class OrderController extends BaseController<Order> {
-  protected service: IService<Order>;
+export default class OrderController extends BaseController<CreateOrderRequest | UpdateOrderRequest, OrderResponse> {
+  protected service: IService<CreateOrderRequest | UpdateOrderRequest, OrderResponse>;
 
   /**
    * @param service - The service implementation handling business logic
    */
-  constructor(service: IService<Order>) {
+  constructor(service: IService<CreateOrderRequest | UpdateOrderRequest, OrderResponse>) {
     super();
     this.service = service;
   }
@@ -31,12 +31,12 @@ export default class OrderController extends BaseController<Order> {
   }
 
   createOrder(req: Request, res: Response): Promise<void> {
-    const { body } = req as { body: Order };
+    const { body } = req as { body: CreateOrderRequest };
     return this.handleRequest(req, res, this.create.bind(this, body));
   }
 
   updateOrder(req: Request, res: Response): Promise<void> {
-    const { body } = req as { body: Order };
+    const { body } = req as { body: UpdateOrderRequest };
     const { id } = req.params;
     return this.handleRequest(
       req,

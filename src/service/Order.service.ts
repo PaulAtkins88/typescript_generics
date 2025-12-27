@@ -1,3 +1,4 @@
+import { CreateOrderRequest, OrderResponse, UpdateOrderRequest } from '../dto/Order.dto';
 import IRepository from '../interface/IRepository';
 import Order from '../model/Order';
 import { BaseService } from './Base.service';
@@ -18,7 +19,7 @@ import { BaseService } from './Base.service';
  * - checkInventoryAvailability(items: Item[])
  * - etc.
  */
-export default class OrderService extends BaseService<Order> {
+export default class OrderService extends BaseService<CreateOrderRequest | UpdateOrderRequest, OrderResponse, Order> {
   protected repository: IRepository<Order>;
 
   /**
@@ -33,4 +34,24 @@ export default class OrderService extends BaseService<Order> {
 
   // All CRUD methods inherited from BaseService<Order>
   // Add custom business logic methods here
+
+  protected toEntity(request: CreateOrderRequest | UpdateOrderRequest): Order {
+    return {
+      id: request.id,
+      user: {
+        id: request.userId,
+        name: '', // name will be hydrated by repository on reads; placeholder for create/update
+      },
+    };
+  }
+
+  protected toResponse(entity: Order): OrderResponse {
+    return {
+      id: entity.id,
+      user: {
+        id: entity.user.id,
+        name: entity.user.name,
+      },
+    };
+  }
 }
