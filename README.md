@@ -1,5 +1,9 @@
 # TypeScript Generics — Layered API Teaching Example
 
+Branch guide:
+- main (this README): simple layered API using a single generic type per layer (`IService<T>`, `BaseService<T>`, `BaseController<T>`)
+- feature/dto-aware-services: DTO-aware variant using request/response generics (`IService<R, T>`, `BaseService<R, T, E>`, `BaseController<R, T>`) with mapping between DTOs and entities
+
 A small Express API demonstrating how to use TypeScript generics to build a clean, layered architecture:
 
 Controller (HTTP) → Service (Business Logic) → Repository (Data Access) → Data Source
