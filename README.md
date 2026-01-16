@@ -71,7 +71,7 @@ Service<R, T, E>
   - depends on IRepository<E>
    │
    ▼
-Repository<T>
+Repository<E>  <-- Changed from <T> to <E>
    - data access abstraction
    - implementations: InMemory, Postgres, File, API
    │
