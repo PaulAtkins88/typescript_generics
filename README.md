@@ -310,3 +310,7 @@ INSERT INTO users (id, name) VALUES (1, 'John Doe') ON CONFLICT (id) DO NOTHING;
 ---
 
 If you’d like, I can add a sample `PostgresUserRepository` implementation and a minimal test suite to demonstrate swapping data sources and testing services with mocks.
+
+---
+
+More of my work: [paulatkins.com.au](https://www.paulatkins.com.au/)
